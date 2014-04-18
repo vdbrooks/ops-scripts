@@ -1,9 +1,10 @@
 ops-scripts
 ===========
 
-## Amazon Web Services Snapshot Rotation Script For Powershell:
+Amazon Web Services Snapshot Rotation Script For Powershell:
   
-  ### Description:
+  Description:
+  ------------
   
     Powershell script to automate daily, weekly, monthly snapshots and their rotation. An .ini file is currently used
     for the configuration file. The script reads a list of server names from a backup.ini file, translates the names
