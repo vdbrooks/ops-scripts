@@ -7,7 +7,7 @@
 	 Additional Sources: Get-Ini Module by Oliver Lipkau <oliver@lipkau.net> / http://oliver.lipkau.net/blog/ 
 	===========================================================================
 	.DESCRIPTION
-		A snapshot backup script for Realty Data
+		A snapshot backup script for AWS
 #>
 
 
