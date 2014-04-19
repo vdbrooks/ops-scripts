@@ -33,7 +33,7 @@ c:\Windows\System32\inetsrv\appcmd.exe set config /section:asp /appAllowDebuggin
 Add-WebConfiguration /system.webServer/defaultDocument/files  "IIS:\sites\example.domain.com" -AtIndex 0 -value @{value="index.aspx"}
 Set-ItemProperty IIS:\AppPools\example.domain.com -name processModel.maxProcesses -value 5
 Set-ItemProperty IIS:\AppPools\example.domain.com -name processModel.idleTimeout -value 00:05:00
-Set-ItemProperty IIS:\apppools\example.domain.com -name processModel -value @{userName="entourage_web";password="photoJo410";identitytype=3}
+Set-ItemProperty IIS:\apppools\example.domain.com -name processModel -value @{userName="some-user";password="whatever";identitytype=3}
 Set-ItemProperty IIS:\AppPools\example.domain.com -name processModel.loadUserProfile -value True
 c:\Windows\System32\inetsrv\appcmd.exe set apppool "example.domain.com" /processModel.loadUserProfile:True
 
@@ -42,8 +42,8 @@ c:\Windows\System32\inetsrv\appcmd.exe set apppool "example.domain.com" /process
 #>
 
 $website = Get-Item IIS:\Sites\example.domain.com
-$website.virtualDirectoryDefaults.userName="entourage_web"
-$website.virtualDirectoryDefaults.password="photoJo410"
+$website.virtualDirectoryDefaults.userName="someuser"
+$website.virtualDirectoryDefaults.password="whatever"
 $website | set-item
 
 #RESTART IIS AFTER CHANGING SETTINGS (Before code is deployed)
