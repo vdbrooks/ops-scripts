@@ -14,7 +14,7 @@ New-Item IIS:\AppPools\example.domain.com
 
 
 New-Item IIS:\Sites\example.domain.com -bindings @{protocol="http";bindingInformation=":80:example.domain.com"} -physicalPath D:\MAIN\Entourage\edo -Force
-Set-ItemProperty IIS:\Sites\example.domain.com -name applicationPool -value example.domain.com
+Set-ItemProperty IIS:\Sites\example.domain.com -name applicationPool -value example.domain.com #
 
 <#
 	Set up some configuration options, in this case at the ASP level, using appcmd.exe
