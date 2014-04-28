@@ -4,16 +4,16 @@
 	 Created on:   	4/11/2014 9:05 AM
 	 Created by:   	Vitorrio Brooks
 	 Organization: 	RightBrain Netowrks, LLC.
-	 Filename:      RealtyDataSnapshotScript.ps1
+	 Filename:      AWSSnapshotScript.ps1
 	 Additional Sources: Get-Ini Module by Microsoft
 	===========================================================================
 	.DESCRIPTION
-		A snapshot backup script for Realty Data
+		A snapshot backup script for EBS volumes
 #>
 
 #Aruments passed in from the console
 #param([String]$path) #The path to the ini config file
-Set-AWSCredentials -AccessKey AKIAITS5ASQX7HFH3WDA -SecretKey 0rHPyEqKsN + KABzjCEJOQTSFD9jzGQDqHjIMZ4hI
+Set-AWSCredentials -AccessKey xxxxxxxxx -SecretKey xxxxxxxxx
 Set-DefaultAWSRegion us-east-1
 Function global:Get-IniContent
 {
@@ -117,14 +117,14 @@ $exclude_queue = New-Object System.Collections.ArrayList #This is an array with 
 $exclude_list = New-Object System.Collections.ArrayList
 $path = "C:\Scripts\backup.ini"
 $ConfigTable = Get-IniContent $path
-echo "The content of the backup.ini file is as follows: " $ConfigTable
+echo "The content of the backup.ini file is as follows: " $ConfigTable 
 $ServerList = $ConfigTable["SERVERS"]
 $InclusionList = $ConfigTable["INCLUSIONS"]
 $ExclusionList = $ConfigTable["EXCLUSIONS"]
 $RotationList = $ConfigTable["ROTATION"]
 ################################################################################################################################################
 
-#create initial list to hold the volumes to be snapshotted. Final list is $snapshot_queue
+#create initial list to hold the volumes to be snapshotted. Final list is $snapshot_queue 
 $volume_list = New-Object System.Collections.ArrayList
 $instance_list = New-Object System.Collections.ArrayList
 $inst_to_volume_list = New-Object System.Collections.ArrayList
@@ -136,7 +136,7 @@ foreach ($t in $ServerList.values)
 	#echo ""
 	#echo "Tag: " + $tag
 	$tag_to_instances = New-Object System.Collections.ArrayList
-	$tag_to_instances = (Get-EC2Instance -Filter @{ Name = "tag-value"; Values = $tag.ToString(); }).Instances.InstanceID
+	$tag_to_instances = (Get-EC2Instance -Filter @{ Name = "tag-value"; Values = $tag.ToString() ; }).Instances.InstanceID
 	foreach ($entry in $tag_to_instances)
 	{
 		
@@ -147,18 +147,20 @@ foreach ($t in $ServerList.values)
 		}
 		$instance_list.Add($instance_id)
 	}
-}
-
-echo $tag
-echo "The list of instances being snapshotted is" $instance_list
-foreach ($instance in $instance_list)
-{
-	$instance = $instance.ToString()
-	$inst_to_volume_list = ((Get-EC2Volume -Filter @{ Name = "attachment.instance-id"; Values = $instance.ToString(); }).VolumeId)
-	foreach ($volume in $inst_to_volume_list)
-	{
-		$snapshot_queue.Add($volume)
 	}
+	
+	echo $tag
+	echo "The list of instances being snapshotted is" $instance_list 
+	foreach ($instance in $instance_list)
+	{
+		$instance = $instance.ToString()
+		$inst_to_volume_list = ((Get-EC2Volume -Filter @{ Name = "attachment.instance-id"; Values = $instance.ToString(); }).VolumeId)
+		foreach ($volume in $inst_to_volume_list)
+		
+	
+		{
+			$snapshot_queue.Add($volume)
+		}
 	
 }
 
@@ -166,8 +168,8 @@ foreach ($instance in $instance_list)
 
 
 echo "The drives being snapshotted today, before adding the inclusion / exclusion list are: "
-echo "-------------------------------------"
-echo $snapshot_queue
+echo "-------------------------------------" 
+echo $snapshot_queue 
 
 
 
@@ -201,14 +203,14 @@ foreach ($instance in $instance_list)
 	$inst_to_volume_list = ((Get-EC2Volume -Filter @{ Name = "attachment.instance-id"; Values = $instance.ToString(); }).VolumeId)
 	foreach ($volume in $inst_to_volume_list)
 	{
-		if ($snapshot_queue.Contains($volume)) { break }
+		if ($snapshot_queue.Contains($volume)) {break }
 		$snapshot_queue.Add($volume)
 	}
 	
 }
 
-echo "The contents of the inclusion list is as follows:  "
-echo $instance_list
+echo "The contents of the inclusion list is as follows:  " 
+echo $instance_list 
 
 #REMOVE EXCLUSIONS
 foreach ($t in $ExclusionList.Values)
@@ -243,7 +245,7 @@ foreach ($instance in $exclude_list)
 }
 
 
-echo "The contents of the exclusion list is as follows:  "
+echo "The contents of the exclusion list is as follows:  " 
 echo $exclude_list
 
 
@@ -266,7 +268,7 @@ foreach ($i in $snapshot_queue)
 		$new_tag = New-Object Amazon.EC2.Model.Tag
 		$new_tag.Key = "Snap-Type"
 		$new_tag.Value = "Monthly"
-		New-EC2Tag -ResourceId $this_snapshot.SnapshotID -Tags $new_tag
+		New-EC2Tag -ResourceId $this_snapshot.SnapshotID -Tags $new_tag 
 		
 		#Now, name the snapshot.
 		$object = Get-EC2Tag -Filter @{ Name = "resource-id"; Values = $i }
@@ -281,8 +283,8 @@ foreach ($i in $snapshot_queue)
 				New-EC2Tag -ResourceId $this_snapshot.SnapshotID -Tags $new_tag1
 			}
 		}
-		# Note that just above we are finding the 'name' tag of the volume
-		# and passing assigning it to the snapshot's 'name' tag.
+		# Note that just above we are finding the 'name' tag of the volume 
+		# and passing assigning it to the snapshot's 'name' tag. 
 		
 		
 	}
@@ -383,7 +385,7 @@ $day_threshold = $days_to_keep_int
 removal queue is a list of all snapshots. We iterate through the tags in the instances removing
 any weekly or monthly snapshots whose dates have not passed the threshold listed in the .ini file. 
 #>
-echo "The list of snapshots we are removing today are: "
+echo "The list of snapshots we are removing today are: " 
 echo $removal_queue
 foreach ($i in $removal_queue)
 {
@@ -399,7 +401,7 @@ foreach ($i in $removal_queue)
 	{
 		if ($snapped_date -gt $today.AddDays(- $week_threshold))
 		{
-			$ignore_queue.Add($i.SnapshotID)
+			$ignore_queue.Add($i.SnapshotID) 
 			
 		}
 	}
@@ -410,7 +412,7 @@ foreach ($i in $removal_queue)
 		{
 			if ($snapped_date -gt $today.AddDays(- $month_threshold))
 			{
-				$ignore_queue.Add($i.SnapshotID)
+				$ignore_queue.Add($i.SnapshotID) 
 				
 			}
 		}
@@ -449,13 +451,13 @@ foreach ($x in $removal_queue)
 	
 	else
 	{
-		if ($this_snapshot.value.Contains("Daily") -or $this_snapshot.value.Contains("Weekly") -or $this_snapshot.value.Contains("Monthly"))
+		if ( $this_snapshot.value.Contains("Daily") -or $this_snapshot.value.Contains("Weekly") -or $this_snapshot.value.Contains("Monthly"))
 		{
 			
-			echo "The snapshot must have contained one of the snap types"
+				echo "The snapshot must have contained one of the snap types" 
 		}
 		
-		else
+		else 
 		{
 			$ignore_queue.Add($x.SnapshotID)
 		}
@@ -478,17 +480,16 @@ $final_removed = ($remove - $ignore)
 Add-Content -Value "On $mydate ,There were $final_removed snapshots removed, as they had passed their expiration" -Path C:\Scripts\Logs\aws_snapshot.log
 foreach ($y in $removal_queue)
 {
-	
-	if ($ignore_queue.Contains($y.SnapshotID))
-	{
-		echo "The ignore queue contains snapshot " $y.SnapshotID "so we did not remove it" `n
-	}
-	else
-	{
-		Remove-EC2Snapshot -SnapshotId $y.SnapshotID -Force
-	}
-	
-}
 
+		if ($ignore_queue.Contains($y.SnapshotID))
+		{
+			echo "The ignore queue contains snapshot " $y.SnapshotID "so we did not remove it" `n
+		}
+		else
+		{
+			Remove-EC2Snapshot -SnapshotId $y.SnapshotID -Force
+		}
+		
+	}
 
 
