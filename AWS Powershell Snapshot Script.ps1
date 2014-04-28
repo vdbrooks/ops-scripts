@@ -189,7 +189,7 @@ foreach ($t in $InclusionList.Values)
 		{
 			break
 		}
-		$instance_list.Add($instance_id)
+		$instance_list.Add($instance_id) #
 	}
 }
 
