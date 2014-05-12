@@ -274,7 +274,7 @@ foreach ($i in $snapshot_queue)
 		$object = Get-EC2Tag -Filter @{ Name = "resource-id"; Values = $i }
 		for ($b = 0; $b -le $object.length; $b++)
 		{
-			if ($object.key[$b] -eq 'Name')
+			if ($object.key -eq 'Name')
 			{
 				$object_name = $object.value[$b]
 				$new_tag1 = New-Object Amazon.EC2.Model.Tag
