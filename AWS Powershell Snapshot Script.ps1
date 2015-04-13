@@ -125,6 +125,7 @@ $RotationList = $ConfigTable["ROTATION"]
 ################################################################################################################################################
 
 #create initial list to hold the volumes to be snapshotted. Final list is $snapshot_queue 
+#Forcing a commit
 $volume_list = New-Object System.Collections.ArrayList
 $instance_list = New-Object System.Collections.ArrayList
 $inst_to_volume_list = New-Object System.Collections.ArrayList
